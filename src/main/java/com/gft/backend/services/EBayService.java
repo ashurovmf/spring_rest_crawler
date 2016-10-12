@@ -1,4 +1,4 @@
-package com.gft.backend.controllers;
+package com.gft.backend.services;
 
 import com.gft.backend.entities.EBayCategory;
 import com.gft.backend.entities.EBayItem;

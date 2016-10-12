@@ -3,6 +3,7 @@ package com.gft.backend.controllers;
 import com.gft.backend.configs.SpringWebConfig;
 import com.gft.backend.entities.EBayCategory;
 import com.gft.backend.entities.EBayItem;
+import com.gft.backend.services.EBayService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

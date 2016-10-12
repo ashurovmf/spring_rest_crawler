@@ -11,8 +11,8 @@
         <spring.version>4.3.2.RELEASE</spring.version>
         <spring-security.version>4.1.1.RELEASE</spring-security.version>
         <spring-data-jpa.version>1.9.2.RELEASE</spring-data-jpa.version>
-        <spring-social.version>1.1.4.RELEASE</spring-social.version>
-        <spring-social-facebook.version>2.0.3.RELEASE</spring-social-facebook.version>
+        <spring-security-oauth.version>2.0.11.RELEASE</spring-security-oauth.version>
+        <spring-session.version>1.2.2.RELEASE</spring-session.version>
         <java.version>1.8</java.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
@@ -20,6 +20,7 @@
         <logging.version>1.7.0</logging.version>
         <hazelcast.version>3.7.1</hazelcast.version>
         <javax-servlet.version>3.1.0</javax-servlet.version>
+        <javax-jstl.version>1.2</javax-jstl.version>
         <jackson.version>2.8.3</jackson.version>
         <httpclient.version>4.5.2</httpclient.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,19 +39,9 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--
-        The core module contains core authentication and and access control components.
-        The config module contains the code used to parse XML configuration files using the Spring Security XML namespace.
-        The taglibs module contains the Spring Security JPS tag libraries.
-        The web module contains filters and all other code related to web security. -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
@@ -71,39 +62,15 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>${spring-security.version}</version>
         </dependency>
-        <!--
-            The config module contains the code used to parse XML configuration files using the Spring Social XML namespace.
-             It also adds support for Java Configuration of Spring Social.
-             The core module contains the connect framework and provides support for OAuth clients.
-             The security module integrates Spring Security with Spring Social.
-             It delegates the authentication concerns typically taken care by Spring Security to service providers
-              by using Spring Social.
-             The web module contains components which handle the authentication handshake between our web application
-             and the service provider. -->
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-core</artifactId>
-            <version>${spring-social.version}</version>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>${spring-security-oauth.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-config</artifactId>
-            <version>${spring-social.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-web</artifactId>
-            <version>${spring-social.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-security</artifactId>
-            <version>${spring-social.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-facebook</artifactId>
-            <version>${spring-social-facebook.version}</version>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session</artifactId>
+            <version>${spring-session.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -119,6 +86,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax-servlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${javax-jstl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -140,6 +112,16 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Logging -->
         <dependency>
@@ -162,6 +144,7 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+        <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -186,6 +169,7 @@
             <version>2.2.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- db -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

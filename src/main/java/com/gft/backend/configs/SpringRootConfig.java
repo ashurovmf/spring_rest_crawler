@@ -2,11 +2,13 @@ package com.gft.backend.configs;
 
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
+import com.gft.backend.utils.FacebookContext;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -16,6 +18,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  * Created by miav on 2016-08-18.
  */
 @Configuration
+@ComponentScan({"com.gft.backend"})
 @PropertySource("classpath:config.properties")
 public class SpringRootConfig {
 
@@ -60,5 +63,12 @@ public class SpringRootConfig {
         return driverManagerDataSource;
     }
 
+    @Bean
+    public FacebookContext getFacebookContext(){
+        FacebookContext config = new FacebookContext();
+        config.setAppId(env.getProperty("spring.social.facebook.appId"));
+        config.setSecretId(env.getProperty("spring.social.facebook.appSecret"));
+        return config;
+    }
 
 }

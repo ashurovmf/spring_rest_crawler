@@ -26,14 +26,14 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
                 .addResourceLocations("/resources/");
     }
 
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        InternalResourceViewResolver viewResolver
-//                = new InternalResourceViewResolver();
-//        viewResolver.setViewClass(JstlView.class);
-//        viewResolver.setPrefix("/WEB-INF/views/");
-//        viewResolver.setSuffix(".jsp");
-//        return viewResolver;
-//    }
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver
+                = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/views/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
+    }
 
 }
