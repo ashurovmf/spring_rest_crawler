@@ -42,14 +42,13 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan({"com.gft.backend"})
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
+public class SpringSecurityConfig {
 
     private static final Logger logger = Logger.getLogger(SpringSecurityConfig.class);
 
     @Configuration
     @EnableWebSecurity
     @EnableHazelcastHttpSession
-    @Order(1)
     public class MainSecurityConfig extends WebSecurityConfigurerAdapter {
         @Autowired
         DataSource dataSource;
@@ -89,7 +88,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
      */
     @Configuration
     @EnableResourceServer
-    @Order(2)
     protected static class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         @Autowired
         DataSource dataSource;
@@ -117,7 +115,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
      */
     @Configuration
     @EnableAuthorizationServer
-    @Order(3)
     protected static class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
         @Autowired
         DataSource dataSource;

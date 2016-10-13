@@ -3,6 +3,7 @@
 <head>
 <title>Facebook Login JavaScript Example</title>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
 </head>
 <body>
 <script>
@@ -75,8 +76,9 @@
       if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
          callback(xmlHttp.responseText);
     }
-    xmlHttp.open("POST","/spring-login/register", true); // false for synchronous request
+    xmlHttp.open("POST","/restcrawler/register", true); // false for synchronous request
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.setRequestHeader('X-CSRF-TOKEN', '${_csrf.token}');
     xmlHttp.send(JSON.stringify(response.authResponse));
   }
   function showToken(responseText){
