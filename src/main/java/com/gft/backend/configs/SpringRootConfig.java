@@ -1,5 +1,6 @@
 package com.gft.backend.configs;
 
+import com.gft.backend.dao.CustomerOrderDAO;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
 import com.gft.backend.utils.FacebookContext;
@@ -13,13 +14,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManagerFactory;
+import java.util.Properties;
 
 /**
  * Created by miav on 2016-08-18.
  */
 @Configuration
+@EnableTransactionManagement
 @ComponentScan({"com.gft.backend"})
-@PropertySource("classpath:config.properties")
+@PropertySource("classpath:appconfig.properties")
 public class SpringRootConfig {
 
     @Autowired
@@ -69,6 +79,58 @@ public class SpringRootConfig {
         config.setAppId(env.getProperty("spring.social.facebook.appId"));
         config.setSecretId(env.getProperty("spring.social.facebook.appSecret"));
         return config;
+    }
+
+    @Bean
+    public Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.connection.driver_class", env.getProperty("hibernate.connection.driver_class"));
+        properties.put("hibernate.connection.url", env.getProperty("hibernate.connection.url"));
+        properties.put("hibernate.connection.username", env.getProperty("hibernate.connection.username"));
+        properties.put("hibernate.connection.password", env.getProperty("hibernate.connection.password"));
+
+        properties.put("hibernate.cache.use_second_level_cache", "false");
+        properties.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+        properties.put("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider");
+        properties.put("hibernate.cache.use_query_cache", "true");
+
+        properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        properties.put("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+        return properties;
+    }
+
+    @Bean
+    public HibernateJpaVendorAdapter getJpaVendorAdapter(){
+        HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+        jpaVendorAdapter.setShowSql(true);
+        jpaVendorAdapter.setGenerateDdl(true);
+        return jpaVendorAdapter;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setDataSource(dataSource());
+        entityManagerFactoryBean.setJpaDialect(new HibernateJpaDialect());
+        entityManagerFactoryBean.setJpaVendorAdapter(getJpaVendorAdapter());
+        entityManagerFactoryBean.setJpaProperties(hibernateProperties());
+        entityManagerFactoryBean.setPackagesToScan("com.gft.backend");
+        return entityManagerFactoryBean;
+    }
+
+    @Bean
+    public JpaTransactionManager getTransactionManager(EntityManagerFactory emf){
+        JpaTransactionManager transactionManager = new JpaTransactionManager(emf);
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
+    }
+
+    @Bean
+    public CustomerOrderDAO getCustomerOrderDAO(){
+        return new CustomerOrderDAO();
     }
 
 }

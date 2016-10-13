@@ -11,7 +11,7 @@ public class OrderTest {
 
     @Test
     public void initOrderTest() throws Exception {
-        Order order = new Order();
+        CustomerOrder order = new CustomerOrder();
         order.setName("AppId1");
         order.setLocation("Cert-Id-test-1");
         order.setId(38);
