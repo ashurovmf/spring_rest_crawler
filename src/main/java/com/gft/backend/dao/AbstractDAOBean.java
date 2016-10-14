@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,6 +27,13 @@ public abstract class AbstractDAOBean<T> {
     @Transactional
     public void create(T entity) {
         getEntityManager().persist(entity);
+    }
+
+    @Transactional
+    public void createCollection(Collection<T> entities) {
+        for(T entity : entities) {
+            getEntityManager().persist(entity);
+        }
     }
 
     @Transactional

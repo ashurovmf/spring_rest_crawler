@@ -1,6 +1,7 @@
 package com.gft.backend.configs;
 
 import com.gft.backend.dao.CustomerOrderDAO;
+import com.gft.backend.dao.EBayCategoryDAO;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
 import com.gft.backend.utils.FacebookContext;
@@ -132,5 +133,8 @@ public class SpringRootConfig {
     public CustomerOrderDAO getCustomerOrderDAO(){
         return new CustomerOrderDAO();
     }
+
+    @Bean
+    public EBayCategoryDAO getCategoryDAO() { return new EBayCategoryDAO(); }
 
 }

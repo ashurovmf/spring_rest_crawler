@@ -1,12 +1,25 @@
 package com.gft.backend.entities;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by miav on 2016-09-30.
  */
+@Entity
+@Table(name = "ebaycategory")
 public class EBayCategory {
+    @Id
+    @Column(name="id")
     private String id;
+    @Column(name="level")
+    @NotNull
     private String level;
+    @Column(name="name")
+    @NotNull
     private String name;
+
+    @Column(name="parent_id")
     private String parent;
 
     public String getId() {
@@ -33,7 +46,7 @@ public class EBayCategory {
         this.name = name;
     }
 
-    public String getParent() {
+    public String  getParent() {
         return parent;
     }
 

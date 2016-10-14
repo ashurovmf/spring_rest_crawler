@@ -2,6 +2,7 @@ package com.gft.backend.controllers;
 
 import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.services.OrderService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,8 @@ import java.util.List;
 @EnableWebMvc
 @RequestMapping("/order")
 public class OrderController {
+
+    private static final Logger logger = Logger.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
