@@ -1,6 +1,7 @@
 package com.gft.backend.controllers;
 
 import com.gft.backend.entities.CustomerOrder;
+import com.gft.backend.services.OrderManagerService;
 import com.gft.backend.services.OrderService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderManagerService managerService;
+
     @PreAuthorize("#oauth2.clientHasRole('ROLE_USER')")
     @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomerOrder>> getOrder(@RequestParam(value = "id", required = false) Integer id) {
@@ -44,7 +48,14 @@ public class OrderController {
     @PreAuthorize("#oauth2.clientHasRole('ROLE_USER')")
     @RequestMapping(value = "/change", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerOrder> createOrder(@RequestBody CustomerOrder order) {
-        CustomerOrder result = orderService.registerNewOrder(order);
+        CustomerOrder result = managerService.registerNewOrder(order);
+        return new ResponseEntity<CustomerOrder>(result, HttpStatus.OK);
+    }
+
+    @PreAuthorize("#oauth2.clientHasRole('ROLE_USER')")
+    @RequestMapping(value = "/change", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CustomerOrder> updateOrder(@RequestBody CustomerOrder order) {
+        CustomerOrder result = orderService.updateOrder(order);
         return new ResponseEntity<CustomerOrder>(result, HttpStatus.OK);
     }
 }

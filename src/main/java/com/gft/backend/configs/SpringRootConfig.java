@@ -2,6 +2,8 @@ package com.gft.backend.configs;
 
 import com.gft.backend.dao.CustomerOrderDAO;
 import com.gft.backend.dao.EBayCategoryDAO;
+import com.gft.backend.dao.OrderResultDAO;
+import com.gft.backend.entities.OrderResult;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
 import com.gft.backend.utils.FacebookContext;
@@ -19,6 +21,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
@@ -29,6 +32,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement
+@EnableScheduling
 @ComponentScan({"com.gft.backend"})
 @PropertySource("classpath:appconfig.properties")
 public class SpringRootConfig {
@@ -129,6 +133,7 @@ public class SpringRootConfig {
         return transactionManager;
     }
 
+
     @Bean
     public CustomerOrderDAO getCustomerOrderDAO(){
         return new CustomerOrderDAO();
@@ -136,5 +141,8 @@ public class SpringRootConfig {
 
     @Bean
     public EBayCategoryDAO getCategoryDAO() { return new EBayCategoryDAO(); }
+
+    @Bean
+    public OrderResultDAO getOrderResultDAO() {return new OrderResultDAO(); }
 
 }

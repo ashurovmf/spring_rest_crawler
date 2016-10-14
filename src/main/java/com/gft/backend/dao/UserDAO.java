@@ -21,6 +21,9 @@ public class UserDAO {
     private static final String GET_USERS_SQL = "SELECT u.username as name, u.password as pass,"+
             " u.email as email, u.provider as provider FROM " +
             "app_user u WHERE u.enabled =1 and u.username = ?";
+    private static final String GET_USERS_BY_ID_SQL = "SELECT u.username as name, "+
+            " u.email as email FROM " +
+            "app_user u WHERE u.enabled =1 and u.id = ?";
     private static final String INSERT_USER_SQL = "insert into app_user (username, password,"+
             " email, provider, enabled) values (?, ?, ?, ?, ?)";
     
@@ -42,6 +45,24 @@ public class UserDAO {
                             user.setEmail(rs.getString("email"));
                             user.setProvider(rs.getString("provider"));
                             //user.setRole(rs.getString("role"));
+                            return user;
+                        }
+                    });
+            return userInfo;
+        } catch (Exception ex){
+            logger.info("User find is fail",ex);
+            return null;
+        }
+    }
+
+    public UserInfo getUserInfoById(int id){
+        try {
+            UserInfo userInfo = (UserInfo)jdbcTemplate.queryForObject(GET_USERS_BY_ID_SQL, new Object[]{id},
+                    new RowMapper<UserInfo>() {
+                        public UserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            UserInfo user = new UserInfo();
+                            user.setUsername(rs.getString("name"));
+                            user.setEmail(rs.getString("email"));
                             return user;
                         }
                     });

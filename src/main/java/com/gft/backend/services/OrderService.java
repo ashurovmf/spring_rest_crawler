@@ -20,6 +20,11 @@ public class OrderService {
         return newOrder;
     }
 
+    public CustomerOrder updateOrder(CustomerOrder order){
+        orderDAO.edit(order);
+        return order;
+    }
+
     public CustomerOrder findOrderById(Integer orderId){
         return orderDAO.find(orderId);
     }
