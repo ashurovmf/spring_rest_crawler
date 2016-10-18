@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -27,6 +28,21 @@ public class PageController {
     public ModelAndView loginwith() {
         ModelAndView model = new ModelAndView();
         model.setViewName("loginwith");
+        return model;
+    }
+
+    @RequestMapping(value = "/me")
+    public ModelAndView orders() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("order");
+        return model;
+    }
+
+    @RequestMapping(value = "/details")
+    public ModelAndView orderresult(@RequestParam(value = "order", required = true) Integer orderId) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("order_id", orderId);
+        model.setViewName("orderdetails");
         return model;
     }
 }

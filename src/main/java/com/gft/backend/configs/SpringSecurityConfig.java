@@ -77,7 +77,7 @@ public class SpringSecurityConfig {
             http
                     .authorizeRequests()
                     // allow everybody access to registration rest
-                    .antMatchers("/","/login**","/register**").permitAll()
+                    .antMatchers("/","/login**","/register**","/me**").permitAll()
                     .anyRequest().authenticated();
         }
     }
@@ -104,7 +104,7 @@ public class SpringSecurityConfig {
             http
                     .authorizeRequests()
                     // allow everybody access to registration rest
-                    .antMatchers("/","/login**","/register**").permitAll()
+                    .antMatchers("/","/login**","/register**","/me**","/details**").permitAll()
                     .anyRequest().authenticated();
         }
     }

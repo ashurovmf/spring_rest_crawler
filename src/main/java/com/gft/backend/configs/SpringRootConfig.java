@@ -3,7 +3,6 @@ package com.gft.backend.configs;
 import com.gft.backend.dao.CustomerOrderDAO;
 import com.gft.backend.dao.EBayCategoryDAO;
 import com.gft.backend.dao.OrderResultDAO;
-import com.gft.backend.entities.OrderResult;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
 import com.gft.backend.utils.FacebookContext;

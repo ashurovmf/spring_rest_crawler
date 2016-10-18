@@ -86,6 +86,7 @@
     var p = JSON.parse(responseText);
     document.getElementById('tokentype').innerHTML = 'Token type:'+p.token_type;
     document.getElementById('token').innerHTML = 'Token:'+p.access_token;
+    window.sessionStorage.accessToken = p.access_token;
   }
   function onLogin(response) {
     if (response.status == 'connected') {
@@ -111,7 +112,9 @@
 <div id="authresult">
 <div id="tokentype"></div>
 <div id="token"></div>
+<div><a href="/restcrawler/me">My Page</a></div>
 </div>
 <h1 id="fb-welcome"></h1>
+
 </body>
 </html>

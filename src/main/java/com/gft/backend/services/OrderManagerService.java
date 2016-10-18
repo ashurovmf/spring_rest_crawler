@@ -1,6 +1,5 @@
 package com.gft.backend.services;
 
-import com.gft.backend.dao.OrderResultDAO;
 import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.entities.OrderResult;
@@ -29,21 +28,44 @@ public class OrderManagerService {
     @Autowired
     private EBayService eBayService;
 
+    @Autowired
     private OrderResultService orderResultService;
 
+    private boolean isLoaded = false;
+
     public CustomerOrder registerNewOrder(CustomerOrder order){
-        order.setStatus("New");
-        queueService.registerNewOrder(order);
-        orderService.registerNewOrder(order);
+        order.setStatus("new");
+        orderService.registerNewOrder(order); //save in db
+        queueService.registerNewOrder(order); //put in queue
         return order;
     }
 
     @Scheduled(fixedRate = 20000)
     public void processOrder(){
         CustomerOrder nextOrder = queueService.getNextOrder();
-        List<String> keys = new ArrayList<>();
-        keys.add(nextOrder.getKeySearchString());
-        List<EBayItem> eBayItems = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
+        if(nextOrder != null){
+            logger.debug("Try to process new order:"+nextOrder.getName());
+            List<String> keys = new ArrayList<>();
+            keys.add(nextOrder.getKeySearchString());
+            List<EBayItem> eBayItems = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
+            List<OrderResult> results = createOrderResults(nextOrder, eBayItems);
+            logger.debug("try save EBAY RESULT:"+results.size());
+            orderResultService.saveResults(results);
+            logger.debug("UPDATE ORDER:"+results.size());
+            nextOrder.setStatus("done");
+            orderService.updateOrder(nextOrder);
+        } else {
+            if(!isLoaded){
+                List<CustomerOrder> orders = orderService.getAllOrders();
+                for (CustomerOrder order : orders){
+                    if("new".equals(order.getStatus()))
+                        queueService.retryOrder(order);
+                }
+            }
+        }
+    }
+
+    private List<OrderResult> createOrderResults(CustomerOrder nextOrder, List<EBayItem> eBayItems) {
         List<OrderResult> results = new ArrayList<>(eBayItems.size());
         for(EBayItem item : eBayItems){
             OrderResult orderResult = new OrderResult();
@@ -52,8 +74,6 @@ public class OrderManagerService {
             orderResult.setOrder(nextOrder);
             results.add(orderResult);
         }
-        nextOrder.setStatus("done");
-        orderService.updateOrder(nextOrder);
-        orderResultService.saveResults(results);
+        return results;
     }
 }

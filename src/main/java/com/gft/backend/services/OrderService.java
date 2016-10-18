@@ -29,7 +29,9 @@ public class OrderService {
         return orderDAO.find(orderId);
     }
 
-    public List<CustomerOrder> getAllOrders(){
-        return orderDAO.findAll();
+    public List<CustomerOrder> getAllOrders(){ return orderDAO.findAll(); }
+
+    public List<CustomerOrder> getAllByUserName(String userName){
+        return orderDAO.findAllByUserName(userName);
     }
 }

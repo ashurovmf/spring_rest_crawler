@@ -1,9 +1,11 @@
 package com.gft.backend.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,11 +34,11 @@ public class CustomerOrder implements Serializable {
     @Column(name="status")
     private String status;
     @NotNull
-    @Column(name="user_id")
-    private int userId;
+    @Column(name="username")
+    private String userName;
 
-    @ElementCollection(targetClass=OrderResult.class)
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "order",fetch = FetchType.EAGER)
     private Set<OrderResult> results;
 
     public int getId() {
@@ -87,13 +89,9 @@ public class CustomerOrder implements Serializable {
         this.status = status;
     }
 
-    public int getUserId() {
-        return userId;
-    }
+    public String getUserName() { return userName; }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public Set<OrderResult> getResults() {
         return results;

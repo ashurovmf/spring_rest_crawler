@@ -1,6 +1,6 @@
 package com.gft.backend.entities;
 
-import com.gft.backend.services.OrderService;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,8 +14,10 @@ public class OrderResult {
 
     @Id
     @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "order_id")
     private CustomerOrder order;
