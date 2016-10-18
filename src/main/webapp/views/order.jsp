@@ -100,8 +100,8 @@ function orderCreated(order){
 </script>
 <div style="border:1px solid black;">
     <h1>Current orders</h1>
-    <div id="orders" style="width:400px; height:300px">
-    <table border="1" id="order-table" style="width:300px; height:300px">
+    <div id="orders" style="width:400px; height:700px">
+    <table border="1" id="order-table" style="width:300px;">
       <thead>
         <th>Id</th>
         <th>Name</th>

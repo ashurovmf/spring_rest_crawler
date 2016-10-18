@@ -38,9 +38,10 @@ function closeOrder(callback) {
 function showOrder(order){
     console.log(order);
     var p = JSON.parse(order);
-    renderResults(p.results)
+    renderResults(p[0].results)
 }
 function renderResults(results){
+    console.log(results);
     $('#result-table').dynatable({
       dataset: {
         records: results
@@ -60,8 +61,8 @@ function orderCreated(order){
 </div>
 <div style="border:1px solid black;">
     <h1>Searching result</h1>
-    <div id="results" style="width:400px; height:300px">
-    <table border="1" id="result-table" style="width:300px; height:300px">
+    <div id="results" style="width:400px; height:700px">
+    <table border="1" id="result-table" style="width:300px;">
       <thead>
         <th>Id</th>
         <th>Status</th>
