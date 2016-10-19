@@ -1,18 +1,12 @@
 package com.gft.backend.services;
 
 import com.gft.backend.dao.OrderResultDAO;
-import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.entities.OrderResult;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.List;
 

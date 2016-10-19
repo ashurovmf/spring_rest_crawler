@@ -1,8 +1,10 @@
 package com.gft.backend.services;
 
+import com.gft.backend.dao.UserDAO;
 import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.entities.OrderResult;
+import com.gft.backend.entities.UserInfo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,6 +33,12 @@ public class OrderManagerService {
     @Autowired
     private OrderResultService orderResultService;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private UserDAO userDAO;
+
     private boolean isLoaded = false;
 
     public CustomerOrder registerNewOrder(CustomerOrder order){
@@ -49,11 +57,10 @@ public class OrderManagerService {
             keys.add(nextOrder.getKeySearchString());
             List<EBayItem> eBayItems = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
             List<OrderResult> results = createOrderResults(nextOrder, eBayItems);
-            logger.debug("try save EBAY RESULT:"+results.size());
             orderResultService.saveResults(results);
-            logger.debug("UPDATE ORDER:"+results.size());
             nextOrder.setStatus("done");
             orderService.updateOrder(nextOrder);
+            //sendInfoAboutSerachResult(nextOrder,results);
         } else {
             if(!isLoaded){
                 List<CustomerOrder> orders = orderService.getAllOrders();
@@ -65,15 +72,30 @@ public class OrderManagerService {
         }
     }
 
-    private List<OrderResult> createOrderResults(CustomerOrder nextOrder, List<EBayItem> eBayItems) {
+    private List<OrderResult> createOrderResults(CustomerOrder order, List<EBayItem> eBayItems) {
         List<OrderResult> results = new ArrayList<>(eBayItems.size());
         for(EBayItem item : eBayItems){
             OrderResult orderResult = new OrderResult();
             orderResult.setStatus("New");
             orderResult.setItemLink(item.getItemURL());
-            orderResult.setOrder(nextOrder);
+            orderResult.setOrder(order);
             results.add(orderResult);
         }
         return results;
+    }
+
+    private void sendInfoAboutSerachResult(CustomerOrder order, List<OrderResult> orderResults){
+        UserInfo userInfo = userDAO.getUserInfo(order.getUserName());
+        StringBuilder builder = new StringBuilder(1024);
+        logger.debug("TRY TO SEND EMAIL TO "+userInfo.getEmail());
+        builder.append("For your order we found followed offers:\n");
+        for(int i=0; i < orderResults.size() && i < 3; ++i){
+            builder.append("--- ");
+            builder.append(orderResults.get(i).getItemLink());
+            builder.append(" .\n");
+        }
+        builder.append("Check full results throw following:\n");
+        builder.append("https://localhost:8443/restcrawler/details?order="+order.getId()+".\n");
+        mailService.sendEmail(userInfo.getEmail(),"restcrawleryahoo.com","Search result",builder.toString());
     }
 }

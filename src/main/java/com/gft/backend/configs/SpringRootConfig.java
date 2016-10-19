@@ -1,21 +1,22 @@
 package com.gft.backend.configs;
 
+import com.gft.backend.aspects.EBayServiceLogging;
 import com.gft.backend.dao.CustomerOrderDAO;
 import com.gft.backend.dao.EBayCategoryDAO;
 import com.gft.backend.dao.OrderResultDAO;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayCredential;
 import com.gft.backend.utils.FacebookContext;
+import com.sun.mail.util.MailSSLSocketFactory;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
+import java.security.GeneralSecurityException;
 import java.util.Properties;
 
 /**
@@ -32,6 +34,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableScheduling
+@EnableAspectJAutoProxy
 @ComponentScan({"com.gft.backend"})
 @PropertySource("classpath:appconfig.properties")
 public class SpringRootConfig {
@@ -132,6 +135,35 @@ public class SpringRootConfig {
         return transactionManager;
     }
 
+    @Bean
+    public MailSender getMailSender(){
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setProtocol("smtp");
+        javaMailSender.setHost("smtp.mail.yahoo.com");
+        javaMailSender.setPort(587);
+        javaMailSender.setUsername("rest_crawler_mik.ash@yahoo.com");
+        javaMailSender.setPassword("test_2016$$");
+        javaMailSender.setJavaMailProperties(getMailProperties());
+
+        return javaMailSender;
+    }
+
+    private Properties getMailProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        properties.setProperty("mail.debug", "true");
+        properties.setProperty("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.smtp.socketFactory.fallback","false");
+        try {
+            MailSSLSocketFactory sf = new MailSSLSocketFactory();
+            sf.setTrustAllHosts(true);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
 
     @Bean
     public CustomerOrderDAO getCustomerOrderDAO(){
@@ -143,5 +175,8 @@ public class SpringRootConfig {
 
     @Bean
     public OrderResultDAO getOrderResultDAO() {return new OrderResultDAO(); }
+
+    @Bean
+    public EBayServiceLogging getEBayServiceLogging() { return new EBayServiceLogging(); }
 
 }

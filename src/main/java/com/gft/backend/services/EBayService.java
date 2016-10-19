@@ -1,5 +1,6 @@
 package com.gft.backend.services;
 
+import com.gft.backend.annotations.LogMethodTime;
 import com.gft.backend.entities.EBayCategory;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.utils.EBayContext;
@@ -47,6 +48,7 @@ public class EBayService {
     @Autowired
     RequestConfig requestConfig;
 
+    @LogMethodTime(millisecondsThreshold = 150)
     public List<EBayItem> searchItems(String categoryId, List<String> keywords, Map<String, String> filters) {
         List<EBayItem> result = dummyItemsArray;
         try {
@@ -75,6 +77,7 @@ public class EBayService {
         return result;
     }
 
+    @LogMethodTime(millisecondsThreshold = 500)
     public List<EBayCategory> getCategories() {
         List<EBayCategory> result = dummyCategoryArray;
         try {

@@ -97,10 +97,6 @@ public class OrderController {
     public ResponseEntity<Set<OrderResult>> orderResults(@RequestParam(value = "id", required = false) Integer orderId) {
         CustomerOrder order = orderService.findOrderById(orderId);
         Set<OrderResult> result = order.getResults();
-        logger.debug("RESULTS FOR ORDER " + order.getName() + " in count " + result.size());
-        for(OrderResult r : result){
-            logger.debug("###RESULT "+r.getId());
-        }
         return new ResponseEntity<Set<OrderResult>>(result, HttpStatus.OK);
     }
 
