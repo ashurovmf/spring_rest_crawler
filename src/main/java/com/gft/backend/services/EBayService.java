@@ -5,6 +5,7 @@ import com.gft.backend.entities.EBayCategory;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.utils.EBayContext;
 import com.gft.backend.utils.EBayGetCategoriesUtils;
+import com.gft.backend.utils.EBayResultWrapper;
 import com.gft.backend.utils.EBaySearchItemsUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,9 +37,6 @@ public class EBayService {
 
     private static final Logger logger = Logger.getLogger(EBayService.class);
 
-    private static final List<EBayItem> dummyItemsArray = new ArrayList<>(2);
-    private static final List<EBayCategory> dummyCategoryArray = new ArrayList<>(2);
-
     @Autowired
     EBayContext context;
 
@@ -49,8 +47,8 @@ public class EBayService {
     RequestConfig requestConfig;
 
     @LogMethodTime(millisecondsThreshold = 150)
-    public List<EBayItem> searchItems(String categoryId, List<String> keywords, Map<String, String> filters) {
-        List<EBayItem> result = dummyItemsArray;
+    public EBayResultWrapper searchItems(String categoryId, List<String> keywords, Map<String, String> filters) {
+        EBayResultWrapper result = null;
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.
                     newInstance().newDocumentBuilder();
@@ -78,8 +76,8 @@ public class EBayService {
     }
 
     @LogMethodTime(millisecondsThreshold = 500)
-    public List<EBayCategory> getCategories() {
-        List<EBayCategory> result = dummyCategoryArray;
+    public EBayResultWrapper getCategories() {
+        EBayResultWrapper result = null;
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.
                     newInstance().newDocumentBuilder();

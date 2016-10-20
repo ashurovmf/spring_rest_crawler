@@ -5,6 +5,7 @@ import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.entities.OrderResult;
 import com.gft.backend.entities.UserInfo;
+import com.gft.backend.utils.EBayResultWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by miav on 2016-10-14.
@@ -55,8 +59,25 @@ public class OrderManagerService {
             logger.debug("Try to process new order:"+nextOrder.getName());
             List<String> keys = new ArrayList<>();
             keys.add(nextOrder.getKeySearchString());
-            List<EBayItem> eBayItems = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
-            List<OrderResult> results = createOrderResults(nextOrder, eBayItems);
+            Set<OrderResult> orderResultsCache = nextOrder.getResults();
+            Map<String, OrderResult> orderResultMap = orderResultsCache.
+                    stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+            EBayResultWrapper eBayResultWrapper = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
+
+            if(eBayResultWrapper.getErrorMessage() != null){
+                logger.error("Ebay search request was fail:"+eBayResultWrapper.getErrorMessage());
+                if("error".equals(nextOrder.getStatus())){
+                    nextOrder.setStatus("fail");
+                } else {
+                    nextOrder.setStatus("error");
+                    queueService.retryOrder(nextOrder);
+                }
+                orderService.updateOrder(nextOrder);
+                return;
+            }
+
+            List<EBayItem> eBayItems = (List<EBayItem>) eBayResultWrapper.getResult();
+            List<OrderResult> results = createOrderResults(nextOrder, eBayItems, orderResultMap);
             orderResultService.saveResults(results);
             nextOrder.setStatus("done");
             orderService.updateOrder(nextOrder);
@@ -72,14 +93,19 @@ public class OrderManagerService {
         }
     }
 
-    private List<OrderResult> createOrderResults(CustomerOrder order, List<EBayItem> eBayItems) {
+    private List<OrderResult> createOrderResults(CustomerOrder order, List<EBayItem> eBayItems,
+                                                 Map<String, OrderResult> orderResults) {
         List<OrderResult> results = new ArrayList<>(eBayItems.size());
         for(EBayItem item : eBayItems){
-            OrderResult orderResult = new OrderResult();
-            orderResult.setStatus("New");
-            orderResult.setItemLink(item.getItemURL());
-            orderResult.setOrder(order);
-            results.add(orderResult);
+            OrderResult cached = orderResults.get(item.getItemId());
+            if(cached == null) {
+                OrderResult orderResult = new OrderResult();
+                orderResult.setStatus("New");
+                orderResult.setItemId(item.getItemId());
+                orderResult.setItemLink(item.getItemURL());
+                orderResult.setOrder(order);
+                results.add(orderResult);
+            }
         }
         return results;
     }

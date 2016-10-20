@@ -2,6 +2,7 @@ package com.gft.backend.services;
 
 import com.gft.backend.dao.EBayCategoryDAO;
 import com.gft.backend.entities.EBayCategory;
+import com.gft.backend.utils.EBayResultWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,9 +28,12 @@ public class EBayCategoryService {
     public List<EBayCategory> getAllCategory(){
         List<EBayCategory> eBayCategories = categoryDAO.findAll();
         if(eBayCategories.size() == 0){
-            List<EBayCategory> eBayServiceCategories = eBayService.getCategories();
-            categoryDAO.createCollection(eBayServiceCategories);
-            eBayCategories = eBayServiceCategories;
+            EBayResultWrapper eBayResultWrapper = eBayService.getCategories();
+            if(eBayResultWrapper.getErrorMessage() == null) {
+                List<EBayCategory> eBayServiceCategories = (List<EBayCategory>) eBayResultWrapper.getResult();
+                categoryDAO.createCollection(eBayServiceCategories);
+                eBayCategories = eBayServiceCategories;
+            }
         }
         return eBayCategories;
     }

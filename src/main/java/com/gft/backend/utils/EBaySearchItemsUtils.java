@@ -85,17 +85,30 @@ public class EBaySearchItemsUtils {
         return httpPost;
     }
 
-    public static List<EBayItem> parseSearchItemsResponse(DocumentBuilder documentBuilder,
+    public static EBayResultWrapper parseSearchItemsResponse(DocumentBuilder documentBuilder,
                                                           HttpEntity entity) throws IOException, SAXException {
+        EBayResultWrapper eBayResult = new EBayResultWrapper();
         List<EBayItem> result = dummyArray;
         if (entity != null) {
             long contentLength = entity.getContentLength();
-            logger.debug("Get response from ebay with length " + contentLength);
             try (InputStream content = entity.getContent()) {
                 Document document = documentBuilder.parse(content);
                 NodeList ack = document.getElementsByTagName("ack");
                 if (ack.getLength() == 1) {
                     logger.debug("Get ack from ebay: " + ack.item(0).getTextContent());
+                    eBayResult.setAck(ack.item(0).getTextContent());
+
+                    NodeList error = document.getElementsByTagName("error");
+                    if(error != null && error.getLength()>0){
+                        NodeList childNodes = error.item(0).getChildNodes();
+                        for (int k = 0; k < childNodes.getLength(); ++k) {
+                            Node itemParam = childNodes.item(k);
+                            if("message".equals(itemParam.getNodeName())){
+                                eBayResult.setErrorMessage(itemParam.getTextContent());
+                            }
+                        }
+                    }
+
                     NodeList searchResult = document.getElementsByTagName("searchResult");
                     String itemCount = searchResult.item(0).getAttributes()
                             .getNamedItem("count").getNodeValue().toString();
@@ -138,6 +151,7 @@ public class EBaySearchItemsUtils {
                 }
             }
         }
-        return result;
+        eBayResult.setResult(result);
+        return eBayResult;
     }
 }

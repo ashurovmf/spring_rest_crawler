@@ -55,7 +55,7 @@ function createNewOrder(callback) {
    xmlHttp.send();
 }
 function showOrders(orders){
-    console.log(orders);
+    //console.log(orders);
     var p = JSON.parse(orders);
     for(var i in p)
     {
@@ -66,6 +66,10 @@ function showOrders(orders){
         records: p
       }
     });
+    var dynatable = $('#order-table').data('dynatable');
+    console.log(dynatable);
+    dynatable.settings.dataset.originalRecords = p;
+    dynatable.process();
 }
 function renderCategories(categories){
     var p = JSON.parse(categories);
@@ -81,13 +85,12 @@ function renderCategories(categories){
              optgroup.id = 'cat_'+id;
              optgroup.label = name;
              rootSelect.appendChild(optgroup);
-         } else {
-             var parentGroup = document.getElementById('cat_'+parent);
-             var option = document.createElement('option');
-             option.value = 'cat_'+id;
-             option.appendChild(document.createTextNode(name));
-             parentGroup.appendChild(option);
          }
+         var parentGroup = document.getElementById('cat_'+parent);
+         var option = document.createElement('option');
+         option.value = 'cat_'+id;
+         option.appendChild(document.createTextNode(name));
+         parentGroup.appendChild(option);
     }
 }
 function orderCreated(order){
@@ -100,7 +103,7 @@ function orderCreated(order){
 </script>
 <div style="border:1px solid black;">
     <h1>Current orders</h1>
-    <div id="orders" style="width:400px; height:700px">
+    <div id="orders" style="width:400px; height:600px">
     <table border="1" id="order-table" style="width:300px;">
       <thead>
         <th>Id</th>

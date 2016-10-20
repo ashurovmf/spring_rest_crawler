@@ -66,8 +66,9 @@ public class EBayGetCategoriesUtils {
     }
 
 
-    public static List<EBayCategory> parseGetCategoriesResponse(DocumentBuilder documentBuilder, HttpEntity entity)
+    public static EBayResultWrapper parseGetCategoriesResponse(DocumentBuilder documentBuilder, HttpEntity entity)
             throws IOException, SAXException {
+        EBayResultWrapper eBayResult = new EBayResultWrapper();
         List<EBayCategory> result = dummyCategoryArray;
         if (entity != null) {
             long contentLength = entity.getContentLength();
@@ -77,6 +78,19 @@ public class EBayGetCategoriesUtils {
                 NodeList ack = document.getElementsByTagName("Ack");
                 if (ack.getLength() == 1) {
                     logger.debug("Get ack from ebay: " + ack.item(0).getTextContent());
+                    eBayResult.setAck(ack.item(0).getTextContent());
+
+                    NodeList error = document.getElementsByTagName("Errors");
+                    if(error != null && error.getLength()>0){
+                        NodeList childNodes = error.item(0).getChildNodes();
+                        for (int k = 0; k < childNodes.getLength(); ++k) {
+                            Node itemParam = childNodes.item(k);
+                            if("LongMessage".equals(itemParam.getNodeName())){
+                                eBayResult.setErrorMessage(itemParam.getTextContent());
+                            }
+                        }
+                    }
+
                     result = new ArrayList<>(1024);
                     NodeList items = document.getElementsByTagName("Category");
                     for (int i = 0; i < items.getLength(); ++i) {
@@ -102,6 +116,7 @@ public class EBayGetCategoriesUtils {
                 }
             }
         }
-        return result;
+        eBayResult.setResult(result);
+        return eBayResult;
     }
 }

@@ -4,6 +4,7 @@ import com.gft.backend.configs.SpringWebConfig;
 import com.gft.backend.entities.EBayCategory;
 import com.gft.backend.entities.EBayItem;
 import com.gft.backend.services.EBayService;
+import com.gft.backend.utils.EBayResultWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ public class EBayServiceTest {
         EBayService service = (EBayService) wac.getBean(EBayService.class);
         List<String> keys = new ArrayList<>(3);
         keys.add("IPhone");
-        List<EBayItem> items = service.searchItems("9355", keys, null);
+        EBayResultWrapper eBayResultWrapper = service.searchItems("9355", keys, null);
+        List<EBayItem> items = (List<EBayItem>) eBayResultWrapper.getResult();
         assertNotNull("List of ebay items is not null", items);
         assertTrue(items.size() > 0);
         assertEquals("EUR", items.get(0).getCurrency());
@@ -45,7 +47,8 @@ public class EBayServiceTest {
     @Test
     public void getCategoryTest() throws Exception {
         EBayService service = (EBayService) wac.getBean(EBayService.class);
-        List<EBayCategory> categories = service.getCategories();
+        EBayResultWrapper eBayResultWrapper = service.getCategories();
+        List<EBayCategory> categories = (List<EBayCategory>) eBayResultWrapper.getResult();
         assertNotNull("List of ebay items is not null", categories);
         assertTrue(categories.size() > 0);
     }

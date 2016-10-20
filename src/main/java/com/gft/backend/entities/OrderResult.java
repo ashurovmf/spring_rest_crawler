@@ -22,6 +22,10 @@ public class OrderResult {
     @JoinColumn(name = "order_id")
     private CustomerOrder order;
 
+    @Column(name="item")
+    @NotNull
+    private String itemId;
+
     @Column(name="status")
     @NotNull
     private String status;
@@ -45,6 +49,10 @@ public class OrderResult {
     public void setOrder(CustomerOrder order) {
         this.order = order;
     }
+
+    public String getItemId() { return itemId; }
+
+    public void setItemId(String itemId) { this.itemId = itemId; }
 
     public String getStatus() {
         return status;
