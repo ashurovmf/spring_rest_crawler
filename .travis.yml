@@ -7,7 +7,7 @@ sudo: false # faster builds
 services:
   - postgresql
 before_script:
-  - psql -c 'create user clnnode with password \'hotCave13\';' -U postgres
+  - psql -c "create user clnnode with password \'hotCave13\';" -U postgres
   - psql -c -f ./src/main/resources/structure.sql -U postgres
 script: mvn cobertura:cobertura
 after_success:
