@@ -64,13 +64,15 @@ public class FacebookController {
         return "{ \"error\":\"User data is not correct\" }";
     }
 
-    private String getAccessTokenForFBUser(@RequestBody FacebookAuthWrapper authPrincipal, Map<String, Object> responseFromFB) {
+    private String getAccessTokenForFBUser(@RequestBody FacebookAuthWrapper authPrincipal,
+                                           Map<String, Object> responseFromFB) {
         UserInfo userInfo = userDAO.getUserInfo(authPrincipal.getUserID());
         if(userInfo == null){
             userDAO.setUserInfo(authPrincipal.getUserID(),"EMPTY",
                     (String) responseFromFB.get("email"), "Facebook");
         }
-        OAuth2Authentication auth = (OAuth2Authentication) DummyAuthenticationBuilder.getOAuth(authPrincipal);
+        OAuth2Authentication auth = (OAuth2Authentication) DummyAuthenticationBuilder
+                .getOAuth(authPrincipal.getUserID());
         logger.debug("AUTH:"+auth);
         OAuth2AccessToken accessToken = tokenServices.createAccessToken(auth);
         return "{ \"id\":\""+authPrincipal.getUserID()+

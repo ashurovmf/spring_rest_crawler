@@ -19,7 +19,7 @@ import java.util.Set;
  * Created by miav on 2016-10-12.
  */
 public class DummyAuthenticationBuilder {
-    public static Authentication getOAuth(FacebookAuthWrapper authPrincipal){
+    public static Authentication getOAuth(String userId){
         HashMap<String, String> authorizationParameters = new HashMap<String, String>();
         authorizationParameters.put("scope", "write");
         authorizationParameters.put("username", "mobile_client");
@@ -35,7 +35,7 @@ public class DummyAuthenticationBuilder {
                 authorityList, true, scopes, resourceIds, "https://localhost:8443/", null, null);
 
         // Create principal and auth token
-        User userPrincipal = new User(authPrincipal.getUserID(), "", true, true, true, true, authorityList);
+        User userPrincipal = new User(userId, "", true, true, true, true, authorityList);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userPrincipal, null, authorityList) ;

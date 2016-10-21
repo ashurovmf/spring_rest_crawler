@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.persistence.EntityManagerFactory;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * Created by miav on 2016-08-18.
@@ -179,4 +181,8 @@ public class SpringRootConfig {
     @Bean
     public EBayServiceLogging getEBayServiceLogging() { return new EBayServiceLogging(); }
 
+    @Bean
+    public Executor taskExecutor() {
+        return new SimpleAsyncTaskExecutor();
+    }
 }

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -54,12 +56,12 @@ public class OrderController {
 
     @PreAuthorize("#oauth2.clientHasRole('ROLE_USER')")
     @RequestMapping(value = "/me", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CustomerOrder>> getMyOrder(@RequestParam(value = "id", required = false) Integer id,
-                                                          Principal principal) {
+    public ResponseEntity<List<CustomerOrder>> getMyOrder(@RequestParam(value = "id", required = false) Integer id) {
         List<CustomerOrder> result = new ArrayList<>();
         if(id == null){
-            logger.debug("Me request with user:"+principal.getName());
-            result = orderService.getAllByUserName(principal.getName());
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            logger.debug("Me request with principal:"+name);
+            result = orderService.getAllByUserName(name);
         }
         else {
             CustomerOrder order = orderService.findOrderById(id);
