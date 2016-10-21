@@ -21,6 +21,7 @@ public class EBayServiceLogging {
     //@Around("execution(* com.gft.backend.services.EBayService.*(..))")
     @Around(value = "@annotation(logMethodTime)", argNames = "logMethodTime")
     public Object around(ProceedingJoinPoint point, LogMethodTime logMethodTime) {
+        logger.debug("METHODLOG:try to check "+MethodSignature.class.cast(point.getSignature()).getMethod().getName());
         Object result = null;
         try {
             LocalTime start = LocalTime.now();

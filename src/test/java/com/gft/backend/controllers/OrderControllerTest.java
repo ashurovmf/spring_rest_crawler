@@ -39,7 +39,7 @@ public class OrderControllerTest {
     @Test
     public void getOrder() throws Exception {
         try {
-            this.mockMvc.perform(get("/order/get?id=1").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+            this.mockMvc.perform(get("/order/me").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.parseMediaType("application/json;charset=UTF-8")))
                     .andExpect(jsonPath("$.id", is(1)));
