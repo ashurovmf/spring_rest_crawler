@@ -53,9 +53,11 @@ public class FacebookController {
     @ResponseBody
     public String registrationAccessCode(@RequestBody FacebookAuthWrapper authPrincipal)
             throws Exception {
+        logger.debug("****** get request for "+authPrincipal.getUserID());
         String tokenRequest = facebookService.sendHttpRequest("GET", FacebookContext.Facebook_ME_URL,
                 new String[]{"access_token","fields"},
                 new String[]{authPrincipal.getAccessToken(),"name,email"});
+        logger.debug("****** get response from FB "+tokenRequest);
         Map<String, Object> responseFromFB = parseResponseFromFB(authPrincipal, tokenRequest);
         if(authPrincipal.getUserID().equals(responseFromFB.get("id"))){
             return getAccessTokenForFBUser(authPrincipal, responseFromFB);
