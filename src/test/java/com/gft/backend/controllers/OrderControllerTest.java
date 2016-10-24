@@ -6,6 +6,7 @@ import com.gft.backend.entities.CustomerOrder;
 import com.gft.backend.services.OrderService;
 import com.gft.backend.utils.DummyAuthenticationBuilder;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,7 @@ public class OrderControllerTest {
         orderDAO.create(order);
     }
 
+    @After
     public void clearData(){
         orderDAO.remove(order);
     }

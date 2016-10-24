@@ -25,7 +25,6 @@ function getOrderDetails(callback){
     xmlHttp.send();
 }
 function closeOrder(callback) {
-   var categoryId = category.value.slice(4);
    var xmlHttp = new XMLHttpRequest();
    xmlHttp.onreadystatechange = function() {
      if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
@@ -48,16 +47,17 @@ function renderResults(results){
       }
     });
 }
-function orderCreated(order){
+function orderClosed(order){
     console.log(order);
     var p = JSON.parse(order);
     var rootSelect = document.getElementById('crt-result');
     rootSelect.appendChild(document.createTextNode('Order '+p.name+'('+p.id+') created with status '+p.status));
-    getUserOrders(showOrders);
 }
 </script>
 <div style="border:1px solid black;">
     <h1>Order '${order_id}'</h1>
+    <button onclick="closeOrder(orderClosed)">Close order</button>
+    <div id="crt-result"></div>
 </div>
 <div style="border:1px solid black;">
     <h1>Searching result</h1>

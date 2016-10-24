@@ -31,6 +31,8 @@ public class OrderManagerServiceTest {
     @Autowired
     WebApplicationContext wac;
 
+    @Autowired
+    CustomerOrderDAO orderDAO;
 
     public CustomerOrder prepareOrder(){
         CustomerOrder order = new CustomerOrder();
@@ -44,7 +46,6 @@ public class OrderManagerServiceTest {
     }
 
     public void clearOrder(CustomerOrder order){
-        CustomerOrderDAO orderDAO = wac.getBean(CustomerOrderDAO.class);
         orderDAO.remove(order);
     }
 
