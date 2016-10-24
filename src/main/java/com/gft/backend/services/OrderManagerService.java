@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,14 +53,14 @@ public class OrderManagerService {
     public void processOrder(){
         CustomerOrder nextOrder = queueService.getNextOrder();
         if(nextOrder != null){
-            logger.debug("Try to process new order:"+nextOrder.getName());
+            logger.debug("Try to process next order:"+nextOrder.getId());
             List<String> keys = new ArrayList<>();
             keys.add(nextOrder.getKeySearchString());
             Set<OrderResult> orderResultsCache = nextOrder.getResults();
-            Map<String, OrderResult> orderResultMap = orderResultsCache.
+            Map<String, OrderResult> orderResultMap = Optional.ofNullable(orderResultsCache).
+                    orElseGet(Collections::emptySet).
                     stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
             EBayResultWrapper eBayResultWrapper = eBayService.searchItems(nextOrder.getCategoryId(), keys, null);
-
             if(eBayResultWrapper.getErrorMessage() != null){
                 logger.error("Ebay search request was fail:"+eBayResultWrapper.getErrorMessage());
                 if("error".equals(nextOrder.getStatus())){
@@ -75,7 +72,7 @@ public class OrderManagerService {
                 orderService.updateOrder(nextOrder);
                 return;
             }
-
+            logger.debug("Process ebay result:"+nextOrder.getName());
             List<EBayItem> eBayItems = (List<EBayItem>) eBayResultWrapper.getResult();
             List<OrderResult> results = createOrderResults(nextOrder, eBayItems, orderResultMap);
             orderResultService.saveResults(results);

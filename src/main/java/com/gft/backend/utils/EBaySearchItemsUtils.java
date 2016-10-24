@@ -107,47 +107,49 @@ public class EBaySearchItemsUtils {
                                 eBayResult.setErrorMessage(itemParam.getTextContent());
                             }
                         }
-                    }
-
-                    NodeList searchResult = document.getElementsByTagName("searchResult");
-                    String itemCount = searchResult.item(0).getAttributes()
-                            .getNamedItem("count").getNodeValue().toString();
-                    NodeList items = document.getElementsByTagName("item");
-                    result = new ArrayList<EBayItem>(Integer.parseInt(itemCount));
-                    for (int i = 0; i < items.getLength(); ++i) {
-                        NodeList childContent = items.item(i).getChildNodes();
-                        EBayItem eBayItem = new EBayItem();
-                        for (int j = 0; j < childContent.getLength(); ++j) {
-                            Node itemParam = childContent.item(j);
-                            if ("itemId".equals(itemParam.getNodeName())) {
-                                eBayItem.setItemId(itemParam.getTextContent());
-                            }
-                            if ("title".equals(itemParam.getNodeName())) {
-                                eBayItem.setTitle(itemParam.getTextContent());
-                            }
-                            if ("paymentMethod".equals(itemParam.getNodeName())) {
-                                eBayItem.setPaymentMethods(itemParam.getTextContent());
-                            }
-                            if ("viewItemURL".equals(itemParam.getNodeName())) {
-                                eBayItem.setItemURL(itemParam.getTextContent());
-                            }
-                            if ("primaryCategory".equals(itemParam.getNodeName())) {
-                                eBayItem.setCategoryId(itemParam.getChildNodes().item(0).getTextContent());
-                            }
-                            if ("sellingStatus".equals(itemParam.getNodeName())) {
-                                NodeList sellingParams = itemParam.getChildNodes();
-                                for (int k = 0; k < sellingParams.getLength(); ++k) {
-                                    Node sellPar = sellingParams.item(k);
-                                    if ("currentPrice".equals(sellPar.getNodeName())) {
-                                        eBayItem.setCurrency(sellPar.getAttributes().item(0).getNodeValue());
-                                        eBayItem.setCurrentPrice(sellPar.getTextContent());
-                                    }
+                    } else {
+                        NodeList searchResult = document.getElementsByTagName("searchResult");
+                        String itemCount = searchResult.item(0).getAttributes()
+                                .getNamedItem("count").getNodeValue().toString();
+                        NodeList items = document.getElementsByTagName("item");
+                        result = new ArrayList<EBayItem>(Integer.parseInt(itemCount));
+                        for (int i = 0; i < items.getLength(); ++i) {
+                            NodeList childContent = items.item(i).getChildNodes();
+                            EBayItem eBayItem = new EBayItem();
+                            for (int j = 0; j < childContent.getLength(); ++j) {
+                                Node itemParam = childContent.item(j);
+                                if ("itemId".equals(itemParam.getNodeName())) {
+                                    eBayItem.setItemId(itemParam.getTextContent());
                                 }
+                                if ("title".equals(itemParam.getNodeName())) {
+                                    eBayItem.setTitle(itemParam.getTextContent());
+                                }
+                                if ("paymentMethod".equals(itemParam.getNodeName())) {
+                                    eBayItem.setPaymentMethods(itemParam.getTextContent());
+                                }
+                                if ("viewItemURL".equals(itemParam.getNodeName())) {
+                                    eBayItem.setItemURL(itemParam.getTextContent());
+                                }
+                                if ("primaryCategory".equals(itemParam.getNodeName())) {
+                                    eBayItem.setCategoryId(itemParam.getChildNodes().item(0).getTextContent());
+                                }
+                                if ("sellingStatus".equals(itemParam.getNodeName())) {
+                                    NodeList sellingParams = itemParam.getChildNodes();
+                                    for (int k = 0; k < sellingParams.getLength(); ++k) {
+                                        Node sellPar = sellingParams.item(k);
+                                        if ("currentPrice".equals(sellPar.getNodeName())) {
+                                            eBayItem.setCurrency(sellPar.getAttributes().item(0).getNodeValue());
+                                            eBayItem.setCurrentPrice(sellPar.getTextContent());
+                                        }
+                                    }
 
+                                }
                             }
+                            result.add(eBayItem);
                         }
-                        result.add(eBayItem);
                     }
+
+
                 }
             }
         }

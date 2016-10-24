@@ -17,11 +17,11 @@ public class MailService {
     private MailSender sender;
 
     public void sendEmail(String toAddress, String fromAddress, String subject, String msgBody) {
-        SimpleMailMessage crunchifyMsg = new SimpleMailMessage();
-        crunchifyMsg.setFrom(fromAddress);
-        crunchifyMsg.setTo(toAddress);
-        crunchifyMsg.setSubject(subject);
-        crunchifyMsg.setText(msgBody);
-        sender.send(crunchifyMsg);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromAddress);
+        message.setTo(toAddress);
+        message.setSubject(subject);
+        message.setText(msgBody);
+        sender.send(message);
     }
 }

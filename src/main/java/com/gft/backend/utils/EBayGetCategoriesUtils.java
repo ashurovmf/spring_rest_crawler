@@ -89,29 +89,29 @@ public class EBayGetCategoriesUtils {
                                 eBayResult.setErrorMessage(itemParam.getTextContent());
                             }
                         }
-                    }
-
-                    result = new ArrayList<>(1024);
-                    NodeList items = document.getElementsByTagName("Category");
-                    for (int i = 0; i < items.getLength(); ++i) {
-                        NodeList childContent = items.item(i).getChildNodes();
-                        EBayCategory eBayCategory = new EBayCategory();
-                        for (int j = 0; j < childContent.getLength(); ++j) {
-                            Node itemParam = childContent.item(j);
-                            if ("CategoryID".equals(itemParam.getNodeName())) {
-                                eBayCategory.setId(itemParam.getTextContent());
+                    } else {
+                        result = new ArrayList<>(1024);
+                        NodeList items = document.getElementsByTagName("Category");
+                        for (int i = 0; i < items.getLength(); ++i) {
+                            NodeList childContent = items.item(i).getChildNodes();
+                            EBayCategory eBayCategory = new EBayCategory();
+                            for (int j = 0; j < childContent.getLength(); ++j) {
+                                Node itemParam = childContent.item(j);
+                                if ("CategoryID".equals(itemParam.getNodeName())) {
+                                    eBayCategory.setId(itemParam.getTextContent());
+                                }
+                                if ("CategoryLevel".equals(itemParam.getNodeName())) {
+                                    eBayCategory.setLevel(itemParam.getTextContent());
+                                }
+                                if ("CategoryName".equals(itemParam.getNodeName())) {
+                                    eBayCategory.setName(itemParam.getTextContent());
+                                }
+                                if ("CategoryParentID".equals(itemParam.getNodeName())) {
+                                    eBayCategory.setParent(itemParam.getTextContent());
+                                }
                             }
-                            if ("CategoryLevel".equals(itemParam.getNodeName())) {
-                                eBayCategory.setLevel(itemParam.getTextContent());
-                            }
-                            if ("CategoryName".equals(itemParam.getNodeName())) {
-                                eBayCategory.setName(itemParam.getTextContent());
-                            }
-                            if ("CategoryParentID".equals(itemParam.getNodeName())) {
-                                eBayCategory.setParent(itemParam.getTextContent());
-                            }
+                            result.add(eBayCategory);
                         }
-                        result.add(eBayCategory);
                     }
                 }
             }

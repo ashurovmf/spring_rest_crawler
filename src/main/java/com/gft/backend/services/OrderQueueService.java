@@ -44,9 +44,7 @@ public class OrderQueueService {
         if(peek == null){
             return nextStepQueue.poll();
         }
-        else{
-            return mainQueue.poll();
-        }
+        return peek;
     }
 
 }
